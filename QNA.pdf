@@ -1,0 +1,473 @@
+Q1-> Write a fn where you can merge two strings alternatively?
+
+Ans-> function merge(word1,word2){
+
+let res = "";
+let max = Math.max(word1.length, word2.length);
+
+for(let i=0;i<max;i++){
+    if(i<word1.length){
+        res += word1[i];
+    }
+    if(i<word2.length){
+        res += word2[i];
+    }
+}
+
+return res;
+
+}
+
+Aapne string concatenation (res += ...) ka use kiya hai. JavaScript me strings immutable (unchangeable) hoti hain. Jab bhi aap res += word1[i] karte hain, JavaScript background me ek nayi string banata hai aur purani string ko copy karta hai.Isse kya hota hai? Choti strings ke liye ("abc", "pqr") isse koi farak nahi padta. Lekin agar strings bohot badi hoñ (jaise lakhs of characters), toh iski time complexity badh kar $O((N + M)^2)$ ho sakti hai kyunki har iteration me string copying hoti hai.Best Practice: Isiliye arrays ka use karke .join('') karna (jaisa humne pehle discuss kiya tha) ya fir JavaScript me arrays ko mutate karna zyada optimal mana jata hai for large inputs.
+
+function mergeAlternately(word1, word2) {
+    let result = [];
+    let maxLength = Math.max(word1.length, word2.length);
+    
+    for (let i = 0; i < maxLength; i++) {
+        if (i < word1.length) {
+            result.push(word1[i]);
+        }
+        if (i < word2.length) {
+            result.push(word2[i]);
+        }
+    }
+    
+    return result.join('');
+}
+
+// Example usage:
+console.log(mergeAlternately("abc", "pqr")); // Output: "apbqcr"
+console.log(mergeAlternately("ab", "pqrs")); // Output: "apbqrs"
+
+
+Q2-> Write a function to return the longest word in a sentence?
+
+Ans-> function findLongestWord(sentence){
+
+if(!sentence || sentence.trim() === "") return "";
+
+// Sentence ko spaces ke basis par words ke array me convert karo
+
+const words = sentence.split(" ");
+let longestWord = "";
+
+for(let word of words){
+    if(word.length>longestWord.length){
+        longestWord = word;
+    }
+}
+return longestWord;
+
+}
+
+// Example usage:
+console.log(findLongestWord("The quick brown fox jumped over the lazy dog")); // Output: "jumped"
+console.log(findLongestWord("Web development is awesome")); // Output: "development"
+
+Q3-> What will be the output of console.log(2 - "2")? Also, what will be the output of console.log(2 + "2")? So, we have to give the output of two console.log. First one is 2 - "2". Second one is 2 + "2".
+
+Ans->. In dono ke outputs yeh honge:
+console.log(2 - "2"); Output: 0
+console.log(2 + "2"); Output: "22"
+
+Phla case (2 - "2"):
+Minus (-) operator string ke sath use nahi hota (kyunki minus ka matlab math subtraction hota hai). Isliye JavaScript Implicit Type Coercion karta hai aur string "2" ko number 2 me convert kar deta hai. Phir operation hota hai: 2 - 2, jiska result 0 aata hai.
+
+Dusra case (2 + "2"):
+Plus (+) operator ke do kaam hote hain—Addition (numbers ke liye) aur Concatenation (strings ko jodna). Jab ek operand string ho ("2"), toh JavaScript baaki sabhi operands ko bhi string bana deta hai aur unhe jod deta hai. Isko string concatenation kehte hain. Isliye number 2 string "2" ban jata hai aur result "22" (string) aata hai.
+
+🎯 Summary:
+Minus (-) hamesha values ko number banata hai (position matter nahi karti).
+
+Plus (+) agar ek bhi jagah string dekh le, toh sabko string bana deta hai (position matter nahi karti).
+
+Q4-> let arr = [[1,2] , [3,4] , [5,6] , [7,8]] Merge it into a single array do not use builtin function?
+
+Ans-> function merge(arr){
+
+    let res = [];
+
+for(let i=0;i<arr.length;i++){
+    for(let j=0;j<arr[i].length;j++){
+        res.push(arr[i][j]);
+    }
+}
+return res;
+}
+
+⏱️ Complexity Analysis (Bonus Points)
+Time Complexity: O(N), jahan N poore nested array ke total elements ki count hai (yahan 8 elements hain). Hum har ek element ko exactly ek baar visit kar rahe hain.
+Space Complexity: O(N), kyunki hum ek naya result array return kar rahe hain jisme saare elements store ho rahe hain.
+
+
+Q5-> What do you mean by infinite currying? Give its example. Explain it in a very, very simplest way with example.
+
+Ans->Normal functions me hum saare arguments ek hi baar me pass karte hain, jaise add(1, 2, 3).
+Lekin Currying me hum function ko tod dete hain taaki hum ek-ek karke arguments pass kar sakein, jaise: add(1)(2)(3).
+
+Aur Infinite Currying ka matlab hai ki aap function ko lagataar (infinitely) chain karke jitne marzi chahein arguments pass karte ja sakte hain, jab tak aap rokna na chahein!
+
+function add(a) {
+    return function(b) {
+        if (b !== undefined) {
+            return add(a + b); // Agar agla number mila, toh jod kar dobara function return karo
+        }
+        return a; // Agar aur number nahi mila (khali bracket), toh total sum return kar do
+    };
+}
+
+// Kaise use karein:
+console.log(add(1)(2)(3)()); // Output: 6
+console.log(add(5)(10)(15)(20)()); // Output: 50
+
+Q7-> Diff between setTimeout and setInterval?
+
+Ans-> In dono me main farak yeh hai ki setTimeout ek baar chal kar ruk jata hai, jabki setInterval baar-baar (repeatedly) chalta rehta hai jab tak aap usko manually rokein nahi.
+
+Aaiye inko detail me samajhte hain:
+
+1. setTimeout (Ek Baar ke liye)
+Kaam: Yeh specify kiye gaye time (milliseconds) ke baad function ko sirf ek baar execute karta hai.
+
+Real-life analogy: Sochiye aapne subah uthne ke liye 6 baje ka ek single alarm lagaya. Alarm bajegea, aap uthenge, aur kaam khatam.
+
+// Yeh 2 seconds (2000ms) baad sirf ek baar chalega
+const timeoutId = setTimeout(() => {
+    console.log("Yeh 2 second baad print hoga!");
+}, 2000);
+
+// Agar beech me hi isko cancel karna ho:
+clearTimeout(timeoutId);
+
+2. setInterval (Baar-baar repetition ke liye)
+Kaam: Yeh function ko har ek fixed time interval ke baad repeatedly (loop ki tarah) call karta rehta hai.
+
+Real-life analogy: Sochiye aapne stopwatch ya reminder lagaya hai jo har 5 minute baad ring karega, jab tak aap khud usko off na kar dein.
+
+let count = 0;
+
+// Yeh har 1 second (1000ms) baad baar-baar chalega
+const intervalId = setInterval(() => {
+    count++;
+    console.log(`Count: ${count}`);
+    
+    // Agar 5 baar chalne ke baad rokna ho:
+    if (count === 5) {
+        clearInterval(intervalId);
+        console.log("Interval stopped!");
+    }
+}, 1000);
+
+Q8-> arr = [1,2,3,4,1,2] return the duplicates in an array?
+
+Ans-> function findDuplicates(arr){
+    let seen = [];
+    let duplicates = [];
+
+for(let i=0;i<arr.length;i++){
+    let num = arr[i];
+
+    if(seen.includes(num)){
+        // Agar haan, toh kya yeh 'duplicates' list me pehle se hai?
+        if(!duplicates.include(num)){
+            duplicates.push(num); // Agar nahi hai, toh duplicate maan kar add kar lo
+        }
+    }
+    else{
+        seen.push(num)
+    }
+}
+    return duplicates;
+}
+
+// Test case:
+const input = [1, 2, 3, 4, 1, 2];
+console.log(findDuplicates(input)); 
+// Output: [1, 2]
+
+Q9-> What difference between client side JavaScript and server side JavaScript?
+
+1. Client-Side JavaScript (Frontend)
+Client-side ka matlab hai woh JavaScript jo user ke browser (jaise Chrome, Safari, Firefox) ke andar run hoti hai.
+
+Kaam Kya Hai: Iska main kaam webpage ko interactive banana, animations dikhana, form validation karna, aur user ke actions (clicks, typing) par response dena hota hai.
+
+Environment: Yeh browser ke JavaScript Engine (jaise V8 in Chrome) par chalti hai.
+
+Kya Access Kar Sakti Hai: Iske paas DOM (Document Object Model), window object, aur browser ki APIs (jaise localStorage, geolocation) ka access hota hai.
+
+Example: Ek button click karne par modal pop-up khulna ya form me email ka format check karna.
+
+2. Server-Side JavaScript (Backend)
+Server-side ka matlab hai woh JavaScript jo remote server par run hoti hai (browser ke andar nahi). Iske liye sabse popular platform Node.js hai.
+
+Kaam Kya Hai: Iska main kaam databases ke sath baat karna, user ki authentication (login/signup) handle karna, API endpoints banana, aur business logic ko manage karna hota hai.
+
+Environment: Yeh server par standalone environment me chalti hai (jaise Node.js runtime).
+
+Kya Access Kar Sakti Hai: Iske paas file system (fs module), database drivers, aur server ki resources ka access hota hai. Lekin iske paas DOM ya window object nahi hota (kyunki wahan koi browser screen hi nahi hai!).
+
+Example: User ne login button dabaya, toh server-side code database me check karega ki password sahi hai ya nahi aur response bhejega.
+
+Q10-> what is object destructuring? Give its example.?
+
+Ans-> Object Destructuring ka matlab hota hai kisi object me se properties (keys) ko bahar nikal kar alag-alag variables me store karna, wo bhi bohot hi chote aur clean syntax me.
+
+Pehle hume object ki properties access karne ke liye baar-baar user.name, user.age likhna padta tha. Destructuring ki madad se hum ek hi line me unhe variables bana lete hain.
+
+const user = {
+    name: "Aniket",
+    age: 24,
+    profession: "Developer"
+};
+
+// --- Destructuring syntax ---
+const { name, age, profession } = user;
+
+console.log(name);       // Output: "Aniket"
+console.log(age);        // Output: 24
+console.log(profession); // Output: "Developer"
+
+Q11-> Is JavaScript dynamically typed or statically typed? Why? Explain.
+
+Ans-> JavaScript ek dynamically typed language hai.
+
+Iska seedha sa matlab yeh hai ki jab aap JavaScript me koi variable banate hain, toh aapko yeh batane ki zaroorat nahi padti ki us variable me kis tarah ka data aayega (jaise string, number, ya boolean). JavaScript khud-b-khud runtime par (code chalte waqt) type ko pehchan leta hai, aur zaroorat padne par variable ka type badal bhi sakta hai.
+
+
+Q12-> What are the different types of pop-up boxes available in JavaScript?
+
+Ans-> 1. Alert Box (window.alert())
+2. Confirm Box (window.confirm())
+3. Prompt Box (window.prompt())
+
+Q13-> What is the difference between session storage and local storage?
+
+Ans-> 1. Local Storage (localStorage)
+Lifespan (Duration): localStorage me save kiya gaya data hamesha ke liye rehta hai. Yeh tab tak delete nahi hota jab tak aap khud code likh kar (localStorage.removeItem()) ya browser ki settings se cache/data clear na karein.
+
+Browser Closed: Agar aapne browser band kar diya, apna computer restart kar diya, ya kuch dino baad bhi website khole, tab bhi data wahi ka wahi milega.
+
+Real-life example: Website ki Dark Mode / Light Mode theme preference ya user ki language setting, jise bar-bar set na karna pade.
+
+2. Session Storage (sessionStorage)
+Lifespan (Duration): sessionStorage me data sirf tab ki session-life tak rehta hai. Jaise hi aap woh specific browser tab ya window band karte hain, data apne aap delete ho jata hai.
+
+Tab-Specific: Agar aap ek hi website ko do alag-alag tabs me kholte hain, toh dono tabs ka sessionStorage bilkul alag hoga (ek tab ka data dusre tab me share nahi hota).
+
+Real-life example: E-commerce website par jab aap multi-step checkout form bhar rahe hote hain, toh temporary form data tab tak rakha jata hai jab tak aap order place na kardein ya tab close na kardein.
+
+Q14-> Difference between pop and shift method.
+
+1. pop() Method (End se remove karna)
+Kaam: Yeh array ke sabse aakhri (last) element ko remove karta hai.
+Performance (Time Complexity) -> Fast (O(1)) – Kyunki baaki elements ko touch nahi karna padta.
+
+2. shift() Method (Start se remove karna)
+Kaam: Yeh array ke sabse pehle (first) element ko remove karta hai.
+Performance (Time Complexity) -> Slower (O(N)) – Kyunki pehla element hatane ke baad baaki sabhi elements ki position index re-adjust karni padti hai.
+
+Q15-> Difference between slice and splice method ?
+
+Ans-> In dono ke beech ka sabse bada aur main fark yeh hai ki slice original array ko change nahi karta (non-mutating), jabki splice original array ko modify/change kar deta hai (mutating).
+
+1. slice() Method (Katta nahi hai, bas copy banata hai)
+Kaam: Yeh original array me se ek specific portion (tukda) nikal kar ek naya array return karta hai.
+
+Original Array: Isse original array par koi asar nahi padta (wo safe rehta hai).
+
+let numbers = [10, 20, 30, 40, 50];
+
+// Index 1 se lekar index 4 se pehle tak ka slice lo
+let slicedArr = numbers.slice(1, 4); 
+
+console.log(slicedArr);  // Output: [20, 30, 40]
+console.log(numbers);    // Output: [10, 20, 30, 40, 50] (Original array safe hai!)
+
+2. splice() Method (Original array me tod-फोड़ karta hai)
+Kaam: Yeh original array me se elements ko delete karne, replace karne, ya naye elements add karne ke kaam aata hai.
+
+Original Array: Yeh original array ko modify kar deta hai.
+
+Syntax: array.splice(startIndex, deleteCount, item1, item2, ...)
+
+startIndex: Kahan se shuru karna hai.
+
+deleteCount: Kitne elements hatane hain.
+
+item1, item2: Agar koi naye elements add karne hon toh.
+
+let fruits = ["apple", "banana", "mango", "orange"];
+
+// Index 1 se shuru karo, 2 elements delete kar do ("banana" aur "mango")
+let removed = fruits.splice(1, 2);
+
+console.log(removed); // Output: ["banana", "mango"] (Jo delete hue wo return honge)
+console.log(fruits);  // Output: ["apple", "orange"] (Original array change ho gaya!)
+
+Q16-> What are timers in JavaScript and what is their purpose?
+
+Ans-> JavaScript me Timers kuch aisi built-in functions (ya APIs) hoti hain jo aapko yeh control dene me madad karti hain ki kisi code ko kab execute karna hai—kuch time baad ya ek fix interval par.
+
+Kyunki JavaScript by default ek single-threaded language hai (yaani ek waqt me ek hi kaam kar sakti hai), toh timers ki madad se hum asynchronous tasks aur delayed operations ko bina main thread ko block kiye run kar sakte hain.
+
+setTimeout(callback, delay):
+Yeh diye gaye delay ke baad function ko sirf ek baar chalata hai. Isko rokne ke liye clearTimeout() use hota hai.
+
+setInterval(callback, delay):
+Yeh har fixed interval par function ko baar-baar chalata rehta hai. Isko rokne ke liye clearInterval() use hota hai.
+
+"Timers asynchronous hote hain. Jab hum setTimeout ya setInterval set karte hain, toh JavaScript ka main thread block nahi hota. Timer ka callback Web APIs / Node Timer environment me chalta hai, aur time poora hone par wo callback Callback Queue (ya Task Queue) me chala jata hai, jahan se Event Loop usko utha kar waapas Main Stack me execution ke liye lata hai."
+
+Q17-> Types of error in JavaScript.
+
+Ans-> 1. SyntaxError (Grammar ki Galti)
+
+2. ReferenceError (Aisi cheez ko bulana jo hai hi nahi)
+Kab aata hai: Jab aap kisi aise variable ya function ko use karne ki koshish karte hain jo declare hi nahi hua hai ya scope me nahi hai.
+
+3. TypeError (Galat Data Type ke sath operation karna)
+Kab aata hai: Jab value ka data type waisa nahi hota jaisa aap use chahte hain. Jaise kisi non-function ko function ki tarah call karna, ya null / undefined ki property access karna.
+
+4. RangeError (Allowed Range ke bahar value dena)
+Kab aata hai: Jab koi number ya value uski defined range ke andar nahi hoti.
+
+5. URIError (URI functions ki galti)
+Kab aata hai: Jab global URI functions (encodeURI() ya decodeURI()) me koi invalid character pass kiya jata hai.
+
+Q18-> In JavaScript, how you turn an object into an array?
+
+Ans-> const user = {
+    name: "Aniket",
+    age: 24,
+    profession: "Developer"
+};
+
+1. Object.keys(obj) (Sirf Keys ka Array)
+Kaam: Yeh object ki saari keys (properties ke naam) ko ek array me return karta hai.
+
+Code Example:
+
+const keysArray = Object.keys(user);
+console.log(keysArray); 
+// Output: ["name", "age", "profession"]
+
+2. Object.values(obj) (Sirf Values ka Array)
+Kaam: Yeh object ki saari values ko ek array me return karta hai.
+
+Code Example:
+
+const valuesArray = Object.values(user);
+console.log(valuesArray); 
+// Output: ["Aniket", 24, "Developer"]
+
+3. Object.entries(obj) (Keys aur Values dono ka Array - Sabse zyada pucha jata hai)
+Kaam: Yeh object ki har ek key-value pair ko ek chote sub-array me daal kar ek 2D array (nested array) return karta hai.
+
+Code Example:
+
+const entriesArray = Object.entries(user);
+console.log(entriesArray); 
+// Output: [ ["name", "Aniket"], ["age", 24], ["profession", "Developer"] ]
+
+Q19-> Tell me some JavaScript frameworks.?
+
+Ans-> Next.js (By Vercel)
+Vue.js
+Angular (By Google)
+Svelte / SvelteKit
+
+Q20-> Difference between synchronous and asynchronous programming.?
+
+Ans-> 1. Synchronous Programming (Blocking)
+Kaam kaise karta hai: Code line by line execute hota hai. Jab tak upar wali line ka execution poora nahi hota, tab tak code aage nahi badh sakta.
+
+Problem: Agar beech me koi aisa task aa jaye jo bohot time leta ho (jaise server se bada data lana ya heavy calculation karna), toh poora program freeze ho jata hai jab tak wo task khatam na ho.
+
+console.log("Pehla kaam shuru");
+
+// Maan lijiye yeh ek heavy loop hai jo 3 second tak poora system rok dega
+for(let i = 0; i < 1000000000; i++) {} 
+
+console.log("Dusra kaam shuru");
+// Output line-by-line aayega aur beech me program rukega
+
+2. Asynchronous Programming (Non-Blocking)
+Kaam kaise karta hai: Code line by line rukta nahi hai. Agar koi time-lene wala task aata hai (jaise API request ya timer), toh JavaScript usko background me bhej deta hai aur aage ka code turant execute karna shuru kar deta hai. Jab background wala task poora ho jata hai, tab uska result (callback) run hota hai.
+
+Fayda: Isse UI freeze nahi hoti aur app fast aur smooth chalta hai.
+
+console.log("Pehla kaam shuru");
+
+// Yeh background me 2 second ke liye chalega, tab tak aage ka code chal jayega
+setTimeout(() => {
+    console.log("Background wala kaam poora ho gaya!");
+}, 2000);
+
+console.log("Dusra kaam shuru");
+
+// Output dekhiye:
+// 1. Pehla kaam shuru
+// 2. Dusra kaam shuru (Ruka nahi, turant chal gaya!)
+// 3. Background wala kaam poora ho gaya! (2 second baad)
+
+"JavaScript by default ek single-threaded synchronous language hai. Lekin browser ya Node.js ke environment (Web APIs aur Event Loop) ki wajah se hum JavaScript me asynchronous programming (jaise Promises, async/await, aur setTimeout) kar pate hain, taaki heavy tasks main thread ko block na karein."
+
+Q21->   Difference between promises and async await, which one is better?
+
+Ans-> 1. Promises (.then() aur .catch())
+Promises ko ES6 me introduce kiya gaya tha taaki callback hell (Pyramid of Doom) se bacha ja sake. Isme hum asynchronous operations ko handle karne ke liye .then() chaining ka use karte hain.
+
+Dikkat: Jab bohot saari chains ban jaati hain (.then().then().then()), toh code ko padhna aur error handle karna thoda mushkil ho jata hai.
+
+2. Async / Await (try...catch)
+Yeh ES8 me aaya tha. Isne asynchronous code ko likhne aur samajhne ka tareeka hi badal diya. Yeh bilkul synchronous code jaisa lagta hai.
+
+Fayda: Yeh clean, readable, aur maintain karne me bohot aasaan hota hai. Isme hum standard try...catch block use kar sakte hain jo errors ko handle karna bohot simple bana deta hai.
+
+"Technically, async/await better mana jata hai modern applications me kyunki yeh code ko readable, clean aur debug karne me aasaan banata hai. Lekin under the hood, async/await ke peeche Promises hi kaam kar rahe hote hain."
+
+Q22-> What are different events in JavaScript?
+
+Ans-> 1. Mouse Events (Mouse se jude events)
+Jab user mouse, trackpad, ya cursor ka use karta hai:
+
+click: Jab user kisi element par click karta hai.
+
+dblclick: Double click karne par.
+
+mouseenter / mouseover: Jab mouse ka cursor kisi element ke upar aata hai.
+
+mouseleave / mouseout: Jab mouse ka cursor element se bahar jata hai.
+
+2. Keyboard Events (Keyboard se jude events)
+Jab user keyboard ki keys ka use karta hai:
+
+keydown: Jab user keyboard ki koi key dabata hai (press rakhta hai).
+
+keyup: Jab user key ko chhodta hai (release karta hai).
+
+3. Form / Input Events (Forms aur inputs se jude events)
+Jab user form fields ke sath interact karta hai:
+
+submit: Jab koi form submit hota hai.
+
+input: Jab user input field me kuch bhi type karta hai (har character par trigger hota hai).
+
+change: Jab input ki value change ho kar user field se बाहर (blur) jata hai (jaise dropdown me option select karna).
+
+focus: Jab user kisi input box par click karta hai (focus me lata hai).
+
+blur: Jab user input box se focus hata kar kahin aur click karta hai.
+
+4. Window / Document Events (Browser state se jude events)
+Jab poora page ya browser window kuch state change krti hai:
+
+load: Jab poora webpage (images aur stylesheets ke sath) poori tarah load ho jata hai.
+
+DOMContentLoaded: Jab sirf HTML document load aur parse ho jata hai (images ka wait nahi karta).
+
+resize: Jab user browser window ka size chota ya bada karta hai.
+
+scroll: Jab user page ko upar ya neeche scroll karta hai.
